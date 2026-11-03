@@ -49,8 +49,10 @@ namespace EmployeeManagement.Api.Controllers
             }
 
             // Validate status
-            if (request.Status != "Active" &&
-                request.Status != "Inactive")
+            var status = request.Status ?? "Active";
+
+            if (status != "Active" &&
+                status != "Inactive")
             {
                 return BadRequest(new
                 {
@@ -70,13 +72,13 @@ namespace EmployeeManagement.Api.Controllers
                 LastName = request.LastName.Trim(),
                 MobileNumber = request.MobileNumber.Trim(),
                 EmailAddress = request.EmailAddress.Trim(),
-                Department = request.Department.Trim(),
-                Designation = request.Designation.Trim(),
-                Status = request.Status,
-                City = request.City.Trim(),
-                State = request.State.Trim(),
-                Country = request.Country.Trim(),
-                Skills = request.Skills.Trim()
+                Department = request.Department?.Trim() ?? string.Empty,
+                Designation = request.Designation?.Trim() ?? string.Empty,
+                Status = status,
+                City = request.City?.Trim() ?? string.Empty,
+                State = request.State?.Trim() ?? string.Empty,
+                Country = request.Country?.Trim() ?? string.Empty,
+                Skills = request.Skills?.Trim() ?? string.Empty
             };
 
             _context.Employees.Add(employee);
@@ -224,8 +226,10 @@ namespace EmployeeManagement.Api.Controllers
                 });
             }
 
-            if (request.Status != "Active" &&
-                request.Status != "Inactive")
+            var status = request.Status ?? "Active";
+
+            if (status != "Active" &&
+                status != "Inactive")
             {
                 return BadRequest(new
                 {
@@ -238,13 +242,13 @@ namespace EmployeeManagement.Api.Controllers
             employee.LastName = request.LastName.Trim();
             employee.MobileNumber = request.MobileNumber.Trim();
             employee.EmailAddress = email;
-            employee.Department = request.Department.Trim();
-            employee.Designation = request.Designation.Trim();
-            employee.Status = request.Status;
-            employee.City = request.City.Trim();
-            employee.State = request.State.Trim();
-            employee.Country = request.Country.Trim();
-            employee.Skills = request.Skills.Trim();
+            employee.Department = request.Department?.Trim() ?? string.Empty;
+            employee.Designation = request.Designation?.Trim() ?? string.Empty;
+            employee.Status = status;
+            employee.City = request.City?.Trim() ?? string.Empty;
+            employee.State = request.State?.Trim() ?? string.Empty;
+            employee.Country = request.Country?.Trim() ?? string.Empty;
+            employee.Skills = request.Skills?.Trim() ?? string.Empty;
 
             await _context.SaveChangesAsync();
 

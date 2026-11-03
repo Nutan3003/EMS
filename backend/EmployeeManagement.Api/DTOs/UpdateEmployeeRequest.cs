@@ -27,26 +27,18 @@ namespace EmployeeManagement.Api.DTOs
         [StringLength(100)]
         public string EmailAddress { get; set; } = string.Empty;
 
-        [Required]
-        public string Department { get; set; } = string.Empty;
+        public string? Department { get; set; }
 
-        [Required]
-        public string Designation { get; set; } = string.Empty;
+        public string? Designation { get; set; }
 
-        [Required]
-        [NotWhitespace]
-        public string Status { get; set; } = "Active";
+        public string? Status { get; set; } = "Active";
 
-        [Required]
-        public string City { get; set; } = string.Empty;
+        public string? City { get; set; }
 
-        [Required]
-        public string State { get; set; } = string.Empty;
+        public string? State { get; set; }
 
-        [Required]
-        public string Country { get; set; } = string.Empty;
+        public string? Country { get; set; }
 
-        [Required]
-        public string Skills { get; set; } = string.Empty;
+        public string? Skills { get; set; }
     }
 }

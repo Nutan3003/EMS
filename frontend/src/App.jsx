@@ -36,6 +36,14 @@ const fields = [
   ["skills", "Skills"],
 ];
 
+const requiredFields = [
+  "loginName",
+  "firstName",
+  "lastName",
+  "mobileNumber",
+  "emailAddress",
+];
+
 function App() {
   const [employees, setEmployees] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -221,51 +229,58 @@ function handleLogout() {
     setForm((previous) => ({ ...previous, [name]: value }));
   }
 
-  function validateForm() {
-    const requiredValues = Object.entries(form).filter(
-      ([name]) => name !== "password" || editingId === null
-    );
+function validateForm() {
+  const required = [...requiredFields];
 
-    if (requiredValues.some(([, value]) => !value.trim())) {
-      return "All required fields must be filled in.";
-    }
-
-    if (!/^[0-9]{10}$/.test(form.mobileNumber)) {
-      return "Mobile number must contain exactly 10 digits.";
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.emailAddress)) {
-      return "Enter a valid email address.";
-    }
-
-    if (
-      editingId === null &&
-      (form.password.length < 8 ||
-        form.password.length > 100 ||
-        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9\s])\S+$/.test(
-          form.password
-        ))
-    ) {
-      return "Password must be 8–100 characters and include uppercase, lowercase, a number, and a special character, without spaces.";
-    }
-
-    if (form.loginName.length > 50) {
-      return "Login name must be 50 characters or fewer.";
-    }
-
-    if (
-      form.firstName.length > 50 ||
-      form.lastName.length > 50
-    ) {
-      return "First and last names must be 50 characters or fewer.";
-    }
-
-    if (form.emailAddress.length > 100) {
-      return "Email address must be 100 characters or fewer.";
-    }
-
-    return "";
+  // Password is required only when creating an employee
+  if (editingId === null) {
+    required.push("password");
   }
+
+  for (const field of required) {
+    if (!form[field]?.trim()) {
+      return `${field} is required.`;
+    }
+  }
+
+  if (!/^[0-9]{10}$/.test(form.mobileNumber)) {
+    return "Mobile number must contain exactly 10 digits.";
+  }
+
+  if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.emailAddress)
+  ) {
+    return "Enter a valid email address.";
+  }
+
+  if (
+    editingId === null &&
+    (
+      form.password.length < 8 ||
+      form.password.length > 100 ||
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9\s])\S+$/.test(form.password)
+    )
+  ) {
+    return "Password must be 8–100 characters and include uppercase, lowercase, a number, and a special character, without spaces.";
+  }
+
+  if (form.loginName.length > 50) {
+    return "Login name must be 50 characters or fewer.";
+  }
+
+  if (
+    form.firstName.length > 50 ||
+    form.lastName.length > 50
+  ) {
+    return "First and last names must be 50 characters or fewer.";
+  }
+
+  if (form.emailAddress.length > 100) {
+    return "Email address must be 100 characters or fewer.";
+  }
+
+  return "";
+}
   function handleEdit(employee) {
     setEditingId(employee.id);
 
@@ -589,7 +604,13 @@ function handleLogout() {
                       fontWeight: 500,
                     }}
                   >
-                    {label}
+                    <span>
+                      {label}
+                      {(requiredFields.includes(name) ||
+                        (name === "password" && editingId === null)) && (
+                        <span style={{ color: "red", marginLeft: "3px" }}>*</span>
+                      )}
+                    </span>
                     <input
                       style={{
                         width: "100%",
@@ -608,7 +629,10 @@ function handleLogout() {
                       }
                       value={form[name]}
                       onChange={handleChange}
-                      required={name !== "password" || editingId === null}
+                      required={
+                        requiredFields.includes(name) ||
+                        (name === "password" && editingId === null)
+                      }
                       disabled={name === "password" && editingId !== null}
                       maxLength={
                         ["loginName", "firstName", "lastName"].includes(name)
@@ -642,7 +666,6 @@ function handleLogout() {
                     name="status"
                     value={form.status}
                     onChange={handleChange}
-                    required
                   >
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
